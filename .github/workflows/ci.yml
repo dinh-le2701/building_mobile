@@ -1,0 +1,50 @@
+name: React Native CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+        os: [macos-latest, ubuntu-latest] # macOS cho iOS, Ubuntu cho Android
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Lint code
+        run: npm run lint
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build Android (Ubuntu)
+        if: runner.os == 'Linux'
+        run: |
+          cd android
+          ./gradlew assembleDebug
+
+      - name: Build iOS (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          cd ios
+          pod install
+          xcodebuild -workspace MyApp.xcworkspace -scheme MyApp -sdk iphonesimulator -configuration Debug build
+
