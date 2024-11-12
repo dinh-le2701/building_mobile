@@ -1,0 +1,37 @@
+{
+    "compilerOptions": {
+      "baseUrl": ".", 
+      "paths": {
+        "@component/*": ["component/*"],
+        "@api/*": ["component/api/*"],
+        "@img/*": ["component/img/*"],
+        
+        // Resident paths
+        "@resident/*": ["screen/Resident/*"],
+        "@accountResident/*": ["screen/Resident/Account/*"],
+        "@contractResident/*": ["screen/Resident/Contract/*"],
+        "@homeResident/*": ["screen/Resident/Home/*"],
+        "@informationResident/*": ["screen/Resident/Information/*"],
+        "@invoiceResident/*": ["screen/Resident/Invoice/*"],
+        "@notificationResident/*": ["screen/Resident/Notification/*"],
+        "@passwordResident/*": ["screen/Resident/Password/*"],
+        "@paymentResident/*": ["screen/Resident/Payment/*"],
+        "@reportResident/*": ["screen/Resident/Report/*"],
+        "@ruleResident/*": ["screen/Resident/Rule/*"],
+  
+        "@signIn/*": ["screen/SignIn/*"],
+  
+        // Staff paths
+        "@staff/*": ["screen/Staff/*"],
+        "@accountStaff/*": ["screen/Staff/AccountStaff/*"],
+        "@contractStaff/*": ["screen/Staff/ContractStaff/*"],
+        "@homeStaff/*": ["screen/Staff/HomeStaff/*"],
+        "@notificationStaff/*": ["screen/Staff/NotificationStaff/*"],
+        "@ruleStaff/*": ["screen/Staff/RuleStaff/*"],
+        "@salaryStaff/*": ["screen/Staff/Salary/*"],
+        "@workScheduleStaff/*": ["screen/Staff/WorkSchedule/*"]
+      }
+    },
+    "exclude": ["node_modules", "build"]
+  }
+  

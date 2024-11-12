@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Pressable, Animated, ScrollView } from 'react-native';
-import Entypo from '@expo/vector-icons/Entypo';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
-const Payment = ({ navigation }) => {
+const PaymentDetail = ({ navigation }) => {
   const [selectedMethod, setSelectedMethod] = useState('counter'); 
   const scaleValue = new Animated.Value(1); 
 
@@ -27,6 +24,9 @@ const Payment = ({ navigation }) => {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
+        <Pressable onPress={() => navigation.navigate('Payment')}>
+          <AntDesign name="arrowleft" size={24} color="white" style={styles.arrowLeft} />
+        </Pressable>
         <Text style={styles.text_header}>Thanh toán</Text>
       </View>
 
@@ -98,32 +98,12 @@ const Payment = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.footer}>
-        <Pressable style={styles.content_footer1} onPress={() => navigation.navigate('Home')}>
-          <Entypo name="home" size={24} color="black" />
-          <Text style={styles.text_footer_home}>Trang chủ</Text>
-        </Pressable>
-
-        <Pressable style={styles.content_footer2} onPress={() => navigation.navigate('Payment')}>
-          <MaterialIcons name="payment" size={24} color="#004d8d" />
-          <Text style={styles.text_footer_pay}>Thanh toán</Text>
-        </Pressable>
-
-        <Pressable style={styles.content_footer3} onPress={() => navigation.navigate('Notification')}>
-          <Ionicons name="notifications" size={24} color="black" />
-          <Text style={styles.text_footer_notification}>Thông báo</Text>
-        </Pressable>
-
-        <Pressable style={styles.content_footer4} onPress={() => navigation.navigate('Acount')}>
-          <MaterialCommunityIcons name="account" size={24} color="black" />
-          <Text style={styles.text_footer_account}>Tài khoản</Text>
-        </Pressable>
-      </View>
+      
     </View>
   );
 };
 
-export default Payment;
+export default PaymentDetail;
 
 const styles = StyleSheet.create({
   container: {
@@ -131,23 +111,25 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   header: {
+    padding: 16,
     backgroundColor: '#a1d2f5',
-    width: '100%',
-    height: 80,
-    position: 'absolute',
-    top: 0,
-    zIndex: 1, 
+    alignItems: 'center',
+    flexDirection: 'row',
   },
   text_header: {
+    color: 'black',
     fontSize: 20,
     fontWeight: 'bold',
+    marginLeft: 10,
+    marginTop: 10
+  },
+  arrowLeft: {
     color: 'black',
-    marginTop: 30,
-    marginLeft: 30,
+    marginTop: 15,
   },
   content: {
     paddingHorizontal: 20,
-    marginTop: 100, 
+    marginTop: 10, 
     // flex: 1,
   },
   title: {

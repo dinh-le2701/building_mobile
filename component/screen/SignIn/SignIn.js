@@ -1,3 +1,4 @@
+import backgroundImg from "@img/toanha.jpg";
 import { StyleSheet, Text, View, Image, Pressable, TextInput, AsyncStorage } from 'react-native';
 import React, { useState } from 'react';
 
@@ -20,7 +21,7 @@ const SignIn = ({ navigation }) => {
       return;
     }
     try {
-      const response = await fetch('http://localhost:8901/auth/signin', {
+      const response = await fetch('http://192.168.1.93:8901/auth/signin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -30,16 +31,11 @@ const SignIn = ({ navigation }) => {
           password: formData.password 
         })
       });
-
+      console.log(response);
       if (response.ok) {
         const data = await response.json();
-        if (data.success) {
-          await AsyncStorage.setItem('token', data.accessToken);  // Lưu accessToken trong AsyncStorage
-          console.log('Login Successfully:', data.message);
-          navigation.navigate("Home");
-        } else {
-          console.log(data.message || 'Đăng nhập thất bại');
-        }
+        console.log('Login Successfully:', data.message);
+        navigation.navigate("Home");
       } else {
         console.log('HTTP error:', response.status);
       }
@@ -50,7 +46,7 @@ const SignIn = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Image style={styles.img_background} source={require('../img/toanha.jpg')} />
+      <Image style={styles.img_background} source={backgroundImg} />
       <View style={styles.content_signin}>
         <View style={styles.user}>
           <Text style={styles.text}>Email</Text>

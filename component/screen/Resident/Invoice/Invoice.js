@@ -103,7 +103,7 @@ const Invoice = ({navigation}) => {
       {/* Payment Button */}
       {selectedApartment === 'Chưa thanh toán' && (
         <View style={styles.footer}>
-          <Pressable onPress={() => navigation.navigate('Payment')} style={styles.payButton}>
+          <Pressable onPress={() => navigation.navigate('PaymentDetail')} style={styles.payButton}>
             <MaterialIcons name="payment" size={24} color="black" />
             <Text style={styles.payButtonText}>Thanh toán</Text>
           </Pressable>

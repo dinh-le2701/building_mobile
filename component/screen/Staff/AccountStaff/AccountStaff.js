@@ -7,51 +7,10 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import avatar from "@img/avatar.png";
 
 
-const Acount = ({ navigation }) => {
-  const [isFaceIDEnabled, setFaceIDEnabled] = useState(true);
-  const [token, setToken]= useState(null);
-  const [userData, setUserData] = useState(null);
-
-  useEffect(()=>{
-    const fetchToken = async()=> {
-      try{
-        const storedToken = await AsyncStorage.getItem('token');
-        if(storedToken){
-          setToken(storedToken);
-          fetchUserData(storedToken); //goi ham lay du lieu nguoi dung
-        } else{
-          Alert.alert('Thông báo', 'Bạn chưa đăng nhập. Vui lòng đăng nhập.');
-          navigation.navigate('SignIn');
-        }
-      } catch (error) {
-        console.error('Error fetching token:', error);
-      }
-    };
-    fetchToken();
-  },[]);
-
-  const fetchUserData = async(token) => {
-    try{
-      const response = await fetch('http://localhost:8901/auth/signin',{
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',          
-        },
-      });
-      if(response.ok){
-        const data = await response.json();
-        setUserData(data);
-      }else {
-        Alert.alert('Lỗi', 'Không thể lấy dữ liệu người dùng');
-      }
-    }catch(error){
-      console.error('Error fetching user data:', error);
-    }
-  };
-
+const AccountStaff = ({ navigation }) => {
   const handleLogout = async () => {
     try {
       await AsyncStorage.removeItem('token');
@@ -73,45 +32,45 @@ const Acount = ({ navigation }) => {
         <View style={styles.profileSection}>
           <Image
             style={styles.profileImage}
-            source={require('../img/avatar.png')}
+            source={avatar}
           />
-         
-          {userData && (
             <View style={styles.profileInfo}>
-              <Text style={styles.profileName}>Cư dân Vinhomes</Text>
-              <Text style={styles.profilePhone}>{userData.email}</Text>
+              <Text style={styles.profileName}>Staff Name</Text>
+              <Text style={styles.profilePhone}>Nhân viên kỹ thuật</Text>
             </View>
-          )}
-        </View>
-
-       
-
-        
-        <View style={styles.accountInfo}>
-          <Text style={styles.accountDetail}>CH001</Text>
-          <Text style={styles.accountAddress}>Vinhomes Serenity, HCM</Text>
         </View>
 
         <View style={styles.settingsList}>
           <Pressable style={styles.settingItem} onPress={() => navigation.navigate('Vehicle')}>
-            <MaterialIcons name="maps-home-work" size={24} color="blue" />
-            <Text style={styles.settingText}>Thông tin phương tiện</Text>
+            <MaterialCommunityIcons name="account-box" size={25} color="blue" />
+            <Text style={styles.settingText}>Thông tin cá nhân</Text>
           </Pressable>
 
           <Pressable style={styles.settingItem} onPress={() => navigation.navigate('Infomation')}>
-            <FontAwesome name="users" size={24} color="green" />
-            <Text style={styles.settingText}>Thông tin cư dân</Text>
+            <MaterialIcons name="monetization-on" size={24} color="green" />
+            <Text style={styles.settingText}>Thông tin lương</Text>
+          </Pressable>
+
+          <Pressable style={styles.settingItem} onPress={() => navigation.navigate('')}>
+            <MaterialCommunityIcons name="file-document-edit-outline" size={24} color="orange" />
+            <Text style={styles.settingText}>Xin nghỉ phép</Text>
           </Pressable>
           
           <Pressable style={styles.settingItem} onPress={() => navigation.navigate('')}>
             <MaterialIcons name="lock" size={24} color="red" />
-            <Text style={styles.settingText}>Đổi mật khẩu</Text>
+            <Text style={styles.settingText}>Khóa tài khoản</Text>
           </Pressable>
+
 
           <Pressable style={styles.settingItem} onPress={() => navigation.navigate('')}>
             <MaterialIcons name="language" size={24} color="pink" />
             <Text style={styles.settingText}>Ngôn ngữ</Text>
             <Text style={styles.settingDetail}>Tiếng Việt</Text>
+          </Pressable>
+
+          <Pressable style={styles.settingItem} onPress={() => navigation.navigate('')}>
+            <Ionicons name="settings" size={24} color="gray" />
+            <Text style={styles.settingText}>Cài đặt</Text>
           </Pressable>
 
         </View>
@@ -121,21 +80,21 @@ const Acount = ({ navigation }) => {
         </Pressable>
       </ScrollView>
 
-      {/* Footer Navigation */}
-      <View style={styles.footer}>
-        <Pressable style={styles.footerItem} onPress={() => navigation.navigate('Home')}>
+       {/* Footer Navigation */}
+       <View style={styles.footer}>
+        <Pressable style={styles.footerItem} onPress={() => navigation.navigate('HomeStaff')}>
           <Entypo name="home" size={24} color="black" />
           <Text style={styles.footerText}>Trang chủ</Text>
         </Pressable>
-        <Pressable style={styles.footerItem} onPress={() => navigation.navigate('Payment')}>
-          <MaterialIcons name="payment" size={24} color="black" />
-          <Text style={styles.footerText}>Thanh toán</Text>
+        <Pressable style={styles.footerItem} onPress={() => navigation.navigate('WorkSchedule')}>
+          <MaterialCommunityIcons name="calendar-edit" size={24} color="black" />
+          <Text style={styles.footerText}>Lịch làm việc</Text>
         </Pressable>
-        <Pressable style={styles.footerItem} onPress={() => navigation.navigate('Notification')}>
+        <Pressable style={styles.footerItem} onPress={() => navigation.navigate('NotificationStaff')}>
           <Ionicons name="notifications" size={24} color="black" />
           <Text style={styles.footerText}>Thông báo</Text>
         </Pressable>
-        <Pressable style={styles.footerItem} onPress={() => navigation.navigate('Acount')}>
+        <Pressable style={styles.footerItem} onPress={() => navigation.navigate('AccountStaff')}>
           <MaterialCommunityIcons name="account" size={24} color="#004d8d" />
           <Text style={styles.footerText1}>Tài khoản</Text>
         </Pressable>
@@ -144,7 +103,7 @@ const Acount = ({ navigation }) => {
   );
 };
 
-export default Acount;
+export default AccountStaff;
 
 const styles = StyleSheet.create({
   container: {
@@ -249,7 +208,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#f8f8f8',
     height: 60,
-    justifyContent: 'space-around',
+    width: '100%', 
+    position: 'absolute',
+    bottom: 0, 
+    justifyContent: 'space-around', 
+    alignItems: 'center',
   },
   footerItem: {
     alignItems: 'center',

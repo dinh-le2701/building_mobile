@@ -3,12 +3,22 @@ import { View, Text, StyleSheet, Pressable } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
-const Report = ({ navigation }) => {
+const Report = ({ navigation, route }) => {
+    const { previousScreen } = route.params || {}; // Lấy thông tin màn hình trước đó
+
+    const handleBackPress = () => {
+        if (previousScreen === 'Home') {
+            navigation.navigate('Home');
+        } else{
+            navigation.navigate('HomeStaff');
+        }
+    };
+
     return (
         <View style={styles.container}>
             {/* Header */}
             <View style={styles.header}>
-                <Pressable onPress={() => navigation.navigate('Home')}>
+                <Pressable onPress={handleBackPress}>
                     <AntDesign name="arrowleft" size={24} color="White" style={styles.arrowleft} />
                 </Pressable>
                 <Text style={styles.headerText}>Báo Cáo</Text>

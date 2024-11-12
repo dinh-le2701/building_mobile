@@ -1,6 +1,7 @@
+import React, { useState } from 'react';
 import { StyleSheet, Text, View, ScrollView, Pressable, Image } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import avatar from "@img/avatar.png";
+import logo from "@img/lo-go.png";
 import Entypo from '@expo/vector-icons/Entypo';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
@@ -10,86 +11,39 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Octicons from '@expo/vector-icons/Octicons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
-const Home = ({ navigation, route }) => {
-  const [token, setToken]= useState(null);
-  const [userData, setUserData] = useState(null);
-
-  useEffect(()=>{
-    const fetchToken = async()=> {
-      try{
-        const storedToken = await AsyncStorage.getItem('token');
-        if(storedToken){
-          setToken(storedToken);
-          fetchUserData(storedToken); //goi ham lay du lieu nguoi dung
-        } else{
-          Alert.alert('Thông báo', 'Bạn chưa đăng nhập. Vui lòng đăng nhập.');
-          navigation.navigate('SignIn');
-        }
-      } catch (error) {
-        console.error('Error fetching token:', error);
-      }
-    };
-    fetchToken();
-  },[]);
-
-  const fetchUserData = async(token) => {
-    try{
-      const response = await fetch('http://localhost:8901/auth/signin',{
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',          
-        },
-      });
-      if(response.ok){
-        const data = await response.json();
-        setUserData(data);
-      }else {
-        Alert.alert('Lỗi', 'Không thể lấy dữ liệu người dùng');
-      }
-    }catch(error){
-      console.error('Error fetching user data:', error);
-    }
-  };
-
-
+const HomeStaff = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      {/* Header */}
+        {/* Header */}
       <View style={styles.header}>    
         <View style={styles.circle}>
-          <Image source={require('../img/avatar.png')} style={styles.avatar}/>
+          <Image source={avatar} style={styles.avatar}/>
         </View>
-        {userData &&(
           <View style={styles.headerText}>
-            <Text style={styles.headerTitle}>{userData.email}</Text>
-          </View>
-      
-       )}
-       <Image source={require('../img/lo-go.png')} style={styles.logo}/>
+            <Text style={styles.headerTitle}>Xin Chào</Text>
+            <Text style={styles.headerTitle}>Name Staff</Text>
+          </View>     
+        <Image source={logo} style={styles.logo}/>
+      </View>
 
-       
-        
-     </View>
-
-      <ScrollView style={styles.content}>
+        <ScrollView style={styles.content}>
         {/* Shortcut Icons */}
         <View style={styles.shortcutContainer}>
-          <Pressable style={styles.homeItemContainer} onPress={() => navigation.navigate('Invoice')}>
+          <Pressable style={styles.homeItemContainer} onPress={() => navigation.navigate('SalaryStaff')}>
             <View style={styles.iconCircle1}>
-              <FontAwesome5 name="file-invoice-dollar" size={24} color="white" />
+              <FontAwesome6 name="sack-dollar" size={24} color="white" />
             </View>
-            <Text style={styles.homeItemText}>Hóa đơn</Text>
+            <Text style={styles.homeItemText}>Lương</Text>
           </Pressable>
 
-          <Pressable style={styles.homeItemContainer} onPress={() => navigation.navigate('Contract')}>
+          <Pressable style={styles.homeItemContainer} onPress={() => navigation.navigate('LaborContract')}>
             <View style={styles.iconCircle2}>
               <FontAwesome6 name="file-contract" size={24} color="white" />
             </View>
             <Text style={styles.homeItemText}>Hợp đồng</Text>
           </Pressable>
 
-          <Pressable style={styles.homeItemContainer} onPress={() => navigation.navigate('Report')}>
+          <Pressable style={styles.homeItemContainer} onPress={() => navigation.navigate('Report', { previousScreen: 'HomeStaff' })} >
             <View style={styles.iconCircle3}>
               <Octicons name="report" size={24} color="white" />
             </View>
@@ -107,19 +61,24 @@ const Home = ({ navigation, route }) => {
         {/* Notifications */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Thông báo mới</Text>
-            <Pressable onPress={() => navigation.navigate('Notification')}>
+            <Text style={styles.sectionTitle}>Lịch làm việc hàng tuần</Text>
+            <Pressable onPress={() => navigation.navigate('WorkSchedule')}>
               <Text style={styles.sectionLink}>Xem tất cả</Text>
             </Pressable>
           </View>
           <View style={styles.notificationContainer}>
             <View style={styles.notificationIconContainer}>
-              <MaterialIcons name="warning" size={24} color="red" />
+              <MaterialCommunityIcons name="calendar-edit" size={24} color="blue" />
             </View>
             <View style={styles.notificationTextContainer}>
-              <Text style={styles.notificationText}>Thông báo hóa đơn tháng 10/2024</Text>
-              <Text style={styles.notificationDate}>5.862.340 VNĐ</Text>
-              <Text style={styles.notificationDate}>1 ngày trước</Text>
+              <Text style={styles.notificationText}>Từ ngày 11/11/2024 đến ngày 16/11/2024</Text>
+              <Text style={styles.notificationDate}>Thứ 2 Ngày 11/11/2024</Text>
+              <Text style={styles.notificationDate}>Ca: 8:00 đến 16:00</Text>
+              <Text style={styles.notificationDate}>Thứ 2 Ngày 11/11/2024</Text>
+              <Pressable onPress={()=> navigation.navigate('WorkSchedule')}>
+                <Text style={styles.notificationDate}>Xem thêm</Text>
+              </Pressable>
+
             </View>
           </View>
         </View>
@@ -128,7 +87,7 @@ const Home = ({ navigation, route }) => {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Các báo cáo</Text>
-            <Pressable onPress={() => navigation.navigate('Report')}>
+            <Pressable onPress={() => navigation.navigate('Report',{ previousScreen: 'HomeStaff' })}>
               <Text style={styles.sectionLink}>Xem tất cả</Text>
             </Pressable>
           </View>
@@ -149,21 +108,21 @@ const Home = ({ navigation, route }) => {
         </View>
       </ScrollView>
 
-      {/* Footer Navigation */}
+        {/* Footer Navigation */}
       <View style={styles.footer}>
-        <Pressable style={styles.footerItem} onPress={() => navigation.navigate('Home')}>
+        <Pressable style={styles.footerItem} onPress={() => navigation.navigate('HomeStaff')}>
           <Entypo name="home" size={24} color="#004d8d" />
           <Text style={styles.footerText1}>Trang chủ</Text>
         </Pressable>
-        <Pressable style={styles.footerItem} onPress={() => navigation.navigate('Payment')}>
-          <MaterialIcons name="payment" size={24} color="black" />
-          <Text style={styles.footerText}>Thanh toán</Text>
+        <Pressable style={styles.footerItem} onPress={() => navigation.navigate('WorkSchedule')}>
+          <MaterialCommunityIcons name="calendar-edit" size={24} color="black" />
+          <Text style={styles.footerText}>Lịch làm việc</Text>
         </Pressable>
-        <Pressable style={styles.footerItem} onPress={() => navigation.navigate('Notification')}>
+        <Pressable style={styles.footerItem} onPress={() => navigation.navigate('NotificationStaff')}>
           <Ionicons name="notifications" size={24} color="black" />
           <Text style={styles.footerText}>Thông báo</Text>
         </Pressable>
-        <Pressable style={styles.footerItem} onPress={() => navigation.navigate('Acount')}>
+        <Pressable style={styles.footerItem} onPress={() => navigation.navigate('AccountStaff')}>
           <MaterialCommunityIcons name="account" size={24} color="black" />
           <Text style={styles.footerText}>Tài khoản</Text>
         </Pressable>
@@ -172,7 +131,7 @@ const Home = ({ navigation, route }) => {
   );
 };
 
-export default Home;
+export default HomeStaff;
 
 const styles = StyleSheet.create({
   container: {
@@ -182,6 +141,7 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: '#a1d2f5',
     height: 150,
+    width:"100%",
     padding: 20,
     flexDirection: 'row',
     alignItems: 'center',
@@ -190,8 +150,9 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    marginLeft: 50,
-    marginTop: -30,
+    marginLeft: 'auto',
+    alignSelf:'center',
+    
   },
   circle: {
     width: 50,
