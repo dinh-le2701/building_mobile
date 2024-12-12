@@ -91,6 +91,17 @@ const Invoice = ({ navigation }) => {
                   }).format(order.waterTotal_price || 0)}
                 </Text>
               </View>
+              {/* Hiển thị tiền phí vệ sinh */}
+              <View style={styles.itemContainer}>
+                <Text style={styles.text}>Phí vệ sinh:</Text>
+                <Text style={styles.amountText}>
+                  {new Intl.NumberFormat("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                  }).format(order.hygiene_price || 0)}
+                </Text>
+              </View>
+              {/* Hiển thị phí quản lý */}
               <View style={styles.itemContainer}>
                 <Text style={styles.text}>Phí quản lý:</Text>
                 <Text style={styles.amountText}>
@@ -112,6 +123,7 @@ const Invoice = ({ navigation }) => {
             </Pressable>
           ))}
         </ScrollView>
+      
       )}
     </View>
   );
