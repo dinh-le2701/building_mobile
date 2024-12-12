@@ -24,10 +24,9 @@ const styles = StyleSheet.create({
   content: {
     paddingHorizontal: 20,
     marginTop: 10, 
-    // flex: 1,
   },
   title: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 10,
   },
@@ -53,13 +52,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#004d8d',
   },
   optionTitle: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'bold',
     marginLeft: 10,
     textAlign: 'left',
   },
   optionText: {
-    fontSize: 14,
+    fontSize: 17,
     color: '#555',
     lineHeight: 20,
     marginLeft: 10, 
@@ -83,11 +82,18 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   transactionText: {
-    fontSize: 16,
+    fontSize: 22,
+    color: 'red',
+    fontWeight:'700',
+    marginBottom: 5,
+    marginTop: 0
   },
   transactionAmount: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 22,
+    color: 'red',
+    fontWeight:'700',
+    marginBottom: 5,
+    marginTop: 0
   },
   button: {
     backgroundColor: 'blue',
