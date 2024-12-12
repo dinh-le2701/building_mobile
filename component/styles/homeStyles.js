@@ -47,6 +47,12 @@ const homeStyles = StyleSheet.create({
       borderRadius: 5,
       marginTop: 5
     },
+    headerTitle: {
+      fontSize: 23,
+      fontWeight: "bold",
+      color: "white",
+      marginLeft: 10
+    },
     headerTitle1: {
       fontSize: 23,
       fontWeight: "bold",
@@ -142,6 +148,7 @@ const homeStyles = StyleSheet.create({
     },
     section: {
       marginTop: 20,
+      paddingBottom: 20
     
     },
     sectionHeader: {
