@@ -32,28 +32,41 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ddd',
   },
   itemContainer: {
+    marginVertical: 8,
+  },
+  itemContainer2: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginVertical: 8,
   },
   text0: {
-    fontSize: 20,
-    fontWeight: '600',
+    fontSize: 24,
+    fontWeight: '800',
     color: '#465c83',
     marginBottom: 5,
     alignSelf:'center',
     marginTop: 5
   },
   text: {
-    fontSize: 18,
+    fontSize: 20,
     color: '#465c83',
+    fontWeight:'500',
     marginBottom: 5,
-    marginTop: 5
+    marginTop: 5,
+    marginLeft: 20
+  },
+  text1: {
+    fontSize: 21,
+    color: '#465c83',
+    fontWeight:'800',
+    marginBottom: 5,
+    marginTop: 5,
+    
   },
   text2: {
-    fontSize: 18,
-    color: '#465c83',
-    fontWeight:'600',
+    fontSize: 22,
+    color: 'red',
+    fontWeight:'700',
     marginBottom: 5,
     marginTop: 5
   },
@@ -63,12 +76,22 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginTop: 5
   },
-  amountText2:{
-    fontSize: 18,
+  amountText1:{
+    fontSize: 19,
+    fontWeight:'700',
     color: '#465c83',
-    fontWeight:'600',
     marginBottom: 5,
-    marginTop: 5
+    marginTop: 5,
+    marginLeft: 20
+
+  },
+  amountText2:{
+    fontSize: 22,
+    color: 'red',
+    fontWeight:'700',
+    marginBottom: 5,
+    marginTop: 5,
+    marginRight: 0
   },
 
   invoiceInfo: {
@@ -101,7 +124,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 80
+    marginBottom: 40
   },
   
   paymentButtonText: {
