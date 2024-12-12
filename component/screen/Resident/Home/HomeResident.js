@@ -1,313 +1,291 @@
-import { StyleSheet, Text, View, ScrollView, Pressable, Image } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import avatar from "@img/avatar.png";
+import { Text, View, ScrollView, Pressable, Image } from "react-native";
+import React, { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import logo from "@img/lo-go.png";
-import Entypo from '@expo/vector-icons/Entypo';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import Octicons from '@expo/vector-icons/Octicons';
-import AntDesign from '@expo/vector-icons/AntDesign';
+import canho from "@img/canho1.jpg";
+import Banner from "@component/animation/Banner";
+import Entypo from "@expo/vector-icons/Entypo";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { getUser } from "@component/api/user";
+import { homeStyles } from "@component/styles/homeStyles";
+import Requirement from "@component/screen/Requirement/Requirement";
+import {
+  calculateElectricityCost,
+  calculateWaterCost,
+  calculateTotalAmount,
+  calculateBillingMonth,
+  getLatestMonthUsages,
+} from "@component/utils/calculateCosts";
+import { useFocusEffect } from "@react-navigation/native";
+import { getInvoices } from "@component/api/invoice";
+import { getRequiments } from "@component/api/requirement";
 
-const Home = ({ navigation, route }) => {
+const banners = [
+  { id: "1", img: require("../../../img/banner1.png") },
+  { id: "2", img: require("../../../img/banner2.png") },
+  { id: "3", img: require("../../../img/banner3.png") },
+];
+
+const HomeResident = ({ navigation }) => {
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [billingMonth, setBillingMonth] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [feedbacks, setFeedBacks] = useState([]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      loadUserData();
+    }, [])
+  );
+
+  const getAllUtilityUsages = async (apartment_id) => {
+    try {
+      setLoading(true); // Bắt đầu loading
+      const res = await getInvoices(apartment_id);
+      if (res && res.utilityUsages) {
+        const sortedutilityUsages = res.utilityUsages.sort((a, b) => {
+          const dateA = new Date(
+            a.update_date.split(" ")[0].split("-").reverse().join("-")
+          );
+          const dateB = new Date(
+            b.update_date.split(" ")[0].split("-").reverse().join("-")
+          );
+          return dateB - dateA; // Sắp xếp từ mới nhất đến cũ nhất
+        });
+        setBillingMonth(
+          calculateBillingMonth(sortedutilityUsages[0].create_date)
+        );
+        setTotalAmount(sortedutilityUsages[0].totalPrice);
+
+        await saveAllOrdersToAsyncStorage(sortedutilityUsages);
+      } else {
+        console.log("No utility usage data found");
+      }
+    } catch (error) {
+      console.log("Error fetching utility usages: ", error);
+    } finally {
+      setLoading(false); // Kết thúc loading
+    }
+  };
+
+  const saveAllOrdersToAsyncStorage = async (sortedMonthlyData) => {
+    try {
+      await AsyncStorage.setItem(
+        "monthlyOrders",
+        JSON.stringify(sortedMonthlyData)
+      );
+      console.log("Saved all monthly data to AsyncStorage");
+    } catch (error) {
+      console.log("Error saving all monthly data to AsyncStorage: ", error);
+    }
+  };
+
+  const [apartmentInfo, setApartmentInfo] = useState({});
+
+  const loadUserData = async () => {
+    try {
+      const storedUserData = await AsyncStorage.getItem("user");
+      if (storedUserData) {
+        const user = JSON.parse(storedUserData);
+        setApartmentInfo(user.apartment);
+        getAllUtilityUsages(user.apartment.apartment_id);
+        feedback(user.apartment.apartment_id);
+        console.log("apartment:", JSON.stringify(user.apartment, null, 2));
+      }
+    } catch (error) {
+      console.log("Error loading user data: ", error);
+    }
+  };
+
+  const feedback = async (id) => {
+    try {
+      const res = await getRequiments(id);
+      if (res) {
+        setFeedBacks(res.feedbacks);
+        console.log("feedbacks: ", res.feedbacks)
+      }
+    } catch (error) {
+      console.log("Error loading user data: ", error);
+    }
+  }
+
   return (
-    <View style={styles.container}>
+    <View style={homeStyles.container}>
       {/* Header */}
-      <View style={styles.header}>    
-        <View style={styles.circle}>
-          <Image source={avatar} style={styles.avatar}/>
-        </View>
-          <View style={styles.headerText}>
-            <Text style={styles.headerTitle}>Xin Chào</Text>
+      <Image source={canho} style={homeStyles.banner} />
+      <View style={homeStyles.header}>
+        <View style={homeStyles.headerText}>
+          <Text style={homeStyles.headerTitle1}>Căn hộ</Text>
+          <View style={homeStyles.btnTitle}>
+            <Text style={homeStyles.headerTitle2}>
+              {apartmentInfo.apartment_name}
+            </Text>
           </View>
-      
-       <Image source={logo} style={styles.logo}/>
+        </View>
+        <Image source={logo} style={homeStyles.logo} />
+      </View>
 
-       
-        
-     </View>
-
-      <ScrollView style={styles.content}>
-        {/* Shortcut Icons */}
-        <View style={styles.shortcutContainer}>
-          <Pressable style={styles.homeItemContainer} onPress={() => navigation.navigate('Invoice')}>
-            <View style={styles.iconCircle1}>
-              <FontAwesome5 name="file-invoice-dollar" size={24} color="white" />
+      <ScrollView style={homeStyles.content}>
+        <View style={homeStyles.shortcutContainer}>
+          <Pressable
+            style={homeStyles.homeItemContainer}
+            onPress={() => navigation.navigate("InfoApartmentResident")}
+          >
+            <View style={homeStyles.iconCircle1}>
+              <FontAwesome name="users" size={24} color="white" />
             </View>
-            <Text style={styles.homeItemText}>Hóa đơn</Text>
+            <Text style={homeStyles.homeItemText}>Căn hộ và cư dân</Text>
+          </Pressable>
+          <Pressable
+            style={homeStyles.homeItemContainer}
+            onPress={() => navigation.navigate("InfoVehicle")}
+          >
+            <View style={homeStyles.iconCircle2}>
+              <MaterialIcons name="maps-home-work" size={24} color="white" />
+            </View>
+
+            <Text style={homeStyles.homeItemText}>Phương tiện</Text>
+          </Pressable>
+          <Pressable
+            style={homeStyles.homeItemContainer}
+            onPress={() => navigation.navigate("Invoice")}
+          >
+            <View style={homeStyles.iconCircle3}>
+              <FontAwesome5
+                name="file-invoice-dollar"
+                size={24}
+                color="white"
+              />
+            </View>
+            <Text style={homeStyles.homeItemText}>Hóa đơn</Text>
           </Pressable>
 
-          <Pressable style={styles.homeItemContainer} onPress={() => navigation.navigate('Contract')}>
-            <View style={styles.iconCircle2}>
-              <FontAwesome6 name="file-contract" size={24} color="white" />
+          <Pressable
+            style={homeStyles.homeItemContainer}
+            onPress={() => navigation.navigate("Requirement")}
+          >
+            <View style={homeStyles.iconCircle4}>
+              <Entypo name="direction" size={24} color="white" />
             </View>
-            <Text style={styles.homeItemText}>Hợp đồng</Text>
+            <Text style={homeStyles.homeItemText}>Yêu cầu & Khiếu nại</Text>
           </Pressable>
 
-          <Pressable style={styles.homeItemContainer} onPress={() => navigation.navigate('Report', { previousScreen: 'Home' })}>
-            <View style={styles.iconCircle3}>
-              <Octicons name="report" size={24} color="white" />
+          <Pressable
+            style={homeStyles.homeItemContainer}
+            onPress={() => navigation.navigate("Payment")}
+          >
+            <View style={homeStyles.iconCircle5}>
+              <MaterialIcons name="payment" size={24} color="white" />
             </View>
-            <Text style={styles.homeItemText}>Báo cáo</Text>
+
+            <Text style={homeStyles.homeItemText}>Thanh toán</Text>
           </Pressable>
 
-          <Pressable style={styles.homeItemContainer} onPress={() => navigation.navigate('Rules')}>
-            <View style={styles.iconCircle4}>
-            <AntDesign name="exception1" size={24} color="white" />
+          <Pressable
+            style={homeStyles.homeItemContainer}
+            onPress={() => navigation.navigate("Rules")}
+          >
+            <View style={homeStyles.iconCircle6}>
+              <AntDesign name="exception1" size={24} color="white" />
             </View>
-            <Text style={styles.homeItemText}>Nội quy</Text>
+            <Text style={homeStyles.homeItemText}>Nội quy</Text>
           </Pressable>
+        </View>
+
+        {/* Banner */}
+        <View style={homeStyles.bannerItem}>
+          <Banner banners={banners} duration={4000} />
         </View>
 
         {/* Notifications */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Thông báo mới</Text>
-            <Pressable onPress={() => navigation.navigate('Notification')}>
-              <Text style={styles.sectionLink}>Xem tất cả</Text>
+        <View style={homeStyles.section}>
+          <View style={homeStyles.sectionHeader}>
+            <Text style={homeStyles.sectionTitle}>Thông báo mới</Text>
+            <Pressable onPress={() => navigation.navigate("Invoice")}>
+              <Text style={homeStyles.sectionLink}>Xem tất cả</Text>
             </Pressable>
           </View>
-          <View style={styles.notificationContainer}>
-            <View style={styles.notificationIconContainer}>
+          <View style={homeStyles.notificationContainer}>
+            <View style={homeStyles.notificationIconContainer}>
               <MaterialIcons name="warning" size={24} color="red" />
             </View>
-            <View style={styles.notificationTextContainer}>
-              <Text style={styles.notificationText}>Thông báo hóa đơn tháng 10/2024</Text>
-              <Text style={styles.notificationDate}>5.862.340 VNĐ</Text>
-              <Text style={styles.notificationDate}>1 ngày trước</Text>
+            <View style={homeStyles.notificationTextContainer}>
+              {billingMonth === "" ? (
+                <Text style={homeStyles.notificationText}>Chưa có hóa đơn</Text>
+              ) : (
+                <>
+                  <Text style={homeStyles.notificationText}>
+                    Thông báo hóa đơn tháng {billingMonth}
+                  </Text>
+                  <Text style={homeStyles.notificationDate}>
+                    {new Intl.NumberFormat("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    }).format(totalAmount)}
+                  </Text>
+                  <Text style={homeStyles.notificationDate}>1 ngày trước</Text>
+                </>
+              )}
             </View>
           </View>
         </View>
 
-        {/* Management Requests */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Các báo cáo</Text>
-            <Pressable onPress={() => navigation.navigate('Report')}>
-              <Text style={styles.sectionLink}>Xem tất cả</Text>
+        {/* Management Requirement*/}
+        <View style={homeStyles.section}>
+          <View style={homeStyles.sectionHeader}>
+            <Text style={homeStyles.sectionTitle}>Các yêu cầu</Text>
+            <Pressable onPress={() => navigation.navigate("Requirement")}>
+              <Text style={homeStyles.sectionLink}>Xem tất cả</Text>
             </Pressable>
           </View>
-          <View style={styles.requestContainer}>
-            <View style={[styles.requestItem, { backgroundColor: '#dff3f5' }]}>
-              <Text style={styles.requestTitle}>Khác</Text>
-              <Text style={styles.requestStatus}>Đang xử lý</Text>
-              <Text style={styles.requestIssue}>Thay đổi cửa kính</Text>
-              <Text style={styles.requestDate}>19/09/2024 15:51</Text>
+          <View style={homeStyles.requestContainer}>
+            <View
+              style={[homeStyles.requestItem, { backgroundColor: "#dff3f5" }]}
+            >
+              <Text style={homeStyles.requestTitle}>{feedbacks[0]?.title}</Text>
+              <Text style={homeStyles.requestStatus}>{feedbacks[0]?.feedbackStatus}</Text>
+              <Text style={homeStyles.requestIssue}>{feedbacks[0]?.description}</Text>
+              <Text style={homeStyles.requestDate}>{feedbacks[0]?.createDate}</Text>
             </View>
-            <View style={[styles.requestItem, { backgroundColor: '#f5e9cf' }]}>
-              <Text style={styles.requestTitle}>Khác</Text>
-              <Text style={styles.requestStatus}>Đang xử lý</Text>
-              <Text style={styles.requestIssue}>Sự cố về điện</Text>
-              <Text style={styles.requestDate}>01/09/2024 15:31</Text>
+            <View
+              style={[homeStyles.requestItem, { backgroundColor: "#f5e9cf" }]}
+            >
+              <Text style={homeStyles.requestTitle}>{feedbacks[1]?.title}</Text>
+              <Text style={homeStyles.requestStatus}>{feedbacks[1]?.feedbackStatus}</Text>
+              <Text style={homeStyles.requestIssue}>{feedbacks[1]?.description}</Text>
+              <Text style={homeStyles.requestDate}>{feedbacks[1]?.createDate}</Text>
             </View>
           </View>
         </View>
       </ScrollView>
 
       {/* Footer Navigation */}
-      <View style={styles.footer}>
-        <Pressable style={styles.footerItem} onPress={() => navigation.navigate('Home')}>
+      <View style={homeStyles.footer}>
+        <Pressable style={homeStyles.footerItem}>
           <Entypo name="home" size={24} color="#004d8d" />
-          <Text style={styles.footerText1}>Trang chủ</Text>
+          <Text style={homeStyles.footerText1}>Trang chủ</Text>
         </Pressable>
-        <Pressable style={styles.footerItem} onPress={() => navigation.navigate('Payment')}>
+        <Pressable
+          style={homeStyles.footerItem}
+          onPress={() => navigation.navigate("Payment")}
+        >
           <MaterialIcons name="payment" size={24} color="black" />
-          <Text style={styles.footerText}>Thanh toán</Text>
+          <Text style={homeStyles.footerText}>Thanh toán</Text>
         </Pressable>
-        <Pressable style={styles.footerItem} onPress={() => navigation.navigate('Notification')}>
-          <Ionicons name="notifications" size={24} color="black" />
-          <Text style={styles.footerText}>Thông báo</Text>
-        </Pressable>
-        <Pressable style={styles.footerItem} onPress={() => navigation.navigate('Acount')}>
+        <Pressable
+          style={homeStyles.footerItem}
+          onPress={() => navigation.navigate("AccountResident")}
+        >
           <MaterialCommunityIcons name="account" size={24} color="black" />
-          <Text style={styles.footerText}>Tài khoản</Text>
+          <Text style={homeStyles.footerText}>Tài khoản</Text>
         </Pressable>
       </View>
     </View>
   );
 };
 
-export default Home;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  header: {
-    backgroundColor: '#a1d2f5',
-    height: 150,
-    padding: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  logo: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    marginLeft: 'auto',
-    alignSelf:'center',
-    
-  },
-  circle: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: 'grey',
-  },
-  avatar: {
-    height: 50,
-    width: 50,
-    borderRadius: 25,
-  },
-  headerText: {
-    marginLeft: 20,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  content: {
-    padding: 20,
-  },
-  avatar2: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-  },
-  shortcutContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  homeItemContainer: {
-    alignItems: 'center',
-    marginHorizontal: 10,
-  },
-  iconCircle1: {
-    backgroundColor: 'orange',
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  iconCircle2: {
-    backgroundColor: 'blue',
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  iconCircle3: {
-    backgroundColor: 'red',
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  iconCircle4: {
-    backgroundColor: 'green',
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  homeItemText: {
-    fontSize: 14,
-    textAlign: 'center',
-  },
-  section: {
-    marginTop: 20,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  sectionLink: {
-    color: '#007aff',
-  },
-  notificationContainer: {
-    flexDirection: 'row',
-    backgroundColor: '#fff3e0',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  notificationIconContainer: {
-    marginRight: 15,
-  },
-  notificationTextContainer: {
-    flex: 1,
-  },
-  notificationText: {
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  notificationDate: {
-    fontSize: 12,
-    color: 'grey',
-    marginTop: 5,
-  },
-  requestContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  requestItem: {
-    padding: 15,
-    borderRadius: 10,
-    flex: 1,
-    marginHorizontal: 5,
-  },
-  requestTitle: {
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  requestStatus: {
-    color: '#ff9800',
-    marginVertical: 5,
-  },
-  requestIssue: {
-    fontSize: 14,
-  },
-  requestDate: {
-    fontSize: 12,
-    color: 'grey',
-  },
-
-  footer: {
-    flexDirection: 'row',
-    backgroundColor: '#f8f8f8',
-    height: 60,
-    justifyContent: 'space-around',
-    alignItems: 'center',
-  },
-  footerItem: {
-    alignItems: 'center',
-  },
-  footerText: {
-    fontSize: 12,
-    fontWeight: '700',
-    marginTop: 2,
-  },
-  footerText1: {
-    fontSize: 12,
-    fontWeight: '700',
-    marginTop: 2,
-    color: '#004d8d'
-  },
-});
+export default HomeResident;
