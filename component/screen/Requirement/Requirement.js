@@ -76,7 +76,7 @@ const Requirement = ({ navigation }) => {
 
                 <View style={styles.viewRow}>
                   <Text style={styles.textTitle}>Trạng thái:</Text>
-                  <Text style={styles.textContent}>{feedback.feedback_status}</Text>
+                  <Text style={styles.textContent}>{feedback.feedbackStatus}</Text>
                 </View>
 
                 <View style={styles.viewRow}>
