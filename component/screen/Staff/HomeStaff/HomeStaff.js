@@ -8,7 +8,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Octicons from '@expo/vector-icons/Octicons';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { homeStyles } from '@component/styles/homeStyles';
+import { homeStyles } from '@component/styles/homeStaffStyles'; 
 import { getStaff } from '@component/api/staff';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
