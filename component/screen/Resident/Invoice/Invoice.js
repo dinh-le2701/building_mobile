@@ -40,7 +40,7 @@ const Invoice = ({ navigation }) => {
       waterAmount: order.waterTotal_price || 0,
       managementFee: order.manage_price || 0,
       totalAmount: order.totalPrice || 0,
-      billingMonth: calculateBillingMonth(order.create_date) || "Chưa có tháng",
+      billingMonth: calculateBillingMonth(order.createDate) || "Chưa có tháng",
     });
   };
 
@@ -71,7 +71,7 @@ const Invoice = ({ navigation }) => {
               style={styles.item}
             >
               <Text style={styles.text0}>
-                Hóa đơn tháng {calculateBillingMonth(order.create_date) || "Chưa có tháng"}
+                Hóa đơn tháng {calculateBillingMonth(order.createDate) || "Chưa có tháng"}
               </Text>
               <View style={styles.itemContainer}>
                 <Text style={styles.text}>Tiền điện:</Text>
