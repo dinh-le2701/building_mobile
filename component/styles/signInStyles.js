@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     resizeMode: 'cover',
-    marginTop: -146.5
+    marginTop: -146
   },
   content_signin: {
     width: '80%',
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
-    marginTop: -435,
+    marginTop: -440,
     // marginBottom: "auto"
   },
   user: {
