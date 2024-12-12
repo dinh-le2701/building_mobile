@@ -45,19 +45,22 @@ const HomeResident = ({ navigation }) => {
   const getAllUtilityUsages = async (apartment_id) => {
     try {
       setLoading(true); // Bắt đầu loading
-      const res = await getInvoices(apartment_id);
-      if (res && res.utilityUsages) {
-        const sortedutilityUsages = res.utilityUsages.sort((a, b) => {
+      // const res = await getInvoices(apartment_id);
+      // if (res && res.utilityUsages) {
+      if (utilityUsages !== null) {
+
+        const sortedutilityUsages = utilityUsages.sort((a, b) => {
           const dateA = new Date(
-            a.update_date.split(" ")[0].split("-").reverse().join("-")
+            a.updateDate.split(" ")[0].split("-").reverse().join("-")
           );
           const dateB = new Date(
-            b.update_date.split(" ")[0].split("-").reverse().join("-")
+            b.updateDate.split(" ")[0].split("-").reverse().join("-")
           );
           return dateB - dateA; // Sắp xếp từ mới nhất đến cũ nhất
         });
+
         setBillingMonth(
-          calculateBillingMonth(sortedutilityUsages[0].create_date)
+          calculateBillingMonth(sortedutilityUsages[0].createDate)
         );
         setTotalAmount(sortedutilityUsages[0].totalPrice);
 
@@ -85,6 +88,7 @@ const HomeResident = ({ navigation }) => {
   };
 
   const [apartmentInfo, setApartmentInfo] = useState({});
+  const [utilityUsages, setUtilityUsages] = useState(null);
 
   const loadUserData = async () => {
     try {
@@ -92,6 +96,13 @@ const HomeResident = ({ navigation }) => {
       if (storedUserData) {
         const user = JSON.parse(storedUserData);
         setApartmentInfo(user.apartment);
+        console.log(
+          "user.apartment.apartment_id: ",
+          user.apartment.apartment_id
+        );
+        console.log("user.utilityUsages: ", user);
+
+        setUtilityUsages(user.apartment.utilityUsages);
         getAllUtilityUsages(user.apartment.apartment_id);
         feedback(user.apartment.apartment_id);
         console.log("apartment:", JSON.stringify(user.apartment, null, 2));
@@ -101,17 +112,22 @@ const HomeResident = ({ navigation }) => {
     }
   };
 
+  useEffect(() => {
+    console.log("utilityUsages trong ef: ", utilityUsages);
+    getAllUtilityUsages(1);
+  }, [utilityUsages]);
+
   const feedback = async (id) => {
     try {
       const res = await getRequiments(id);
       if (res) {
         setFeedBacks(res.feedbacks);
-        console.log("feedbacks: ", res.feedbacks)
+        console.log("feedbacks: ", res.feedbacks);
       }
     } catch (error) {
       console.log("Error loading user data: ", error);
     }
-  }
+  };
 
   return (
     <View style={homeStyles.container}>
@@ -247,17 +263,29 @@ const HomeResident = ({ navigation }) => {
               style={[homeStyles.requestItem, { backgroundColor: "#dff3f5" }]}
             >
               <Text style={homeStyles.requestTitle}>{feedbacks[0]?.title}</Text>
-              <Text style={homeStyles.requestStatus}>{feedbacks[0]?.feedbackStatus}</Text>
-              <Text style={homeStyles.requestIssue}>{feedbacks[0]?.description}</Text>
-              <Text style={homeStyles.requestDate}>{feedbacks[0]?.createDate}</Text>
+              <Text style={homeStyles.requestStatus}>
+                {feedbacks[0]?.feedbackStatus}
+              </Text>
+              <Text style={homeStyles.requestIssue}>
+                {feedbacks[0]?.description}
+              </Text>
+              <Text style={homeStyles.requestDate}>
+                {feedbacks[0]?.createDate}
+              </Text>
             </View>
             <View
               style={[homeStyles.requestItem, { backgroundColor: "#f5e9cf" }]}
             >
               <Text style={homeStyles.requestTitle}>{feedbacks[1]?.title}</Text>
-              <Text style={homeStyles.requestStatus}>{feedbacks[1]?.feedbackStatus}</Text>
-              <Text style={homeStyles.requestIssue}>{feedbacks[1]?.description}</Text>
-              <Text style={homeStyles.requestDate}>{feedbacks[1]?.createDate}</Text>
+              <Text style={homeStyles.requestStatus}>
+                {feedbacks[1]?.feedbackStatus}
+              </Text>
+              <Text style={homeStyles.requestIssue}>
+                {feedbacks[1]?.description}
+              </Text>
+              <Text style={homeStyles.requestDate}>
+                {feedbacks[1]?.createDate}
+              </Text>
             </View>
           </View>
         </View>
