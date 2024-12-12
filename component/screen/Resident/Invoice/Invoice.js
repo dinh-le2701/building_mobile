@@ -38,11 +38,19 @@ const Invoice = ({ navigation }) => {
     navigation.navigate("InvoiceDetail", {
       electricityAmount: order.electricTotalPrice || 0,
       waterAmount: order.waterTotal_price || 0,
+      hygieneFee: order.hygiene_price || 0,
       managementFee: order.manage_price || 0,
       totalAmount: order.totalPrice || 0,
       billingMonth: calculateBillingMonth(order.createDate) || "Chưa có tháng",
+      electricityOld: order.electricity_old || 0,
+      electricityNew: order.electricity_new || 0,
+      electricityUsed: order.electricityTotalUsage || 0,
+      waterOld: order.water_old || 0,
+      waterNew: order.water_new || 0,
+      waterUsed: order.waterTotalUsage || 0,
     });
   };
+  
 
   return (
     <View style={styles.container}>
