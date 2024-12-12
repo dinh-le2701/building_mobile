@@ -16,9 +16,9 @@ export const getUser = async (userId) => {
         const apartmentRes = await axios.get(`/api/account/${userId}/apartment`);
         console.log("Thông tin căn hộ: ", apartmentRes.data);
 
-        if (!apartmentRes.data || !apartmentRes.data.apartment_id) {
-            throw new Error('Không tìm thấy thông tin căn hộ');
-        }
+        // if (!apartmentRes.data || !apartmentRes.data.apartment_id) {
+        //     throw new Error('Không tìm thấy thông tin căn hộ');
+        // }
 
         const apartment_id = apartmentRes.data.apartment_id;
 
