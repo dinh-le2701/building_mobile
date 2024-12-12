@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 const AxiosInstance = axios.create({
-  baseURL: 'http://localhost:8908',
-});
+  baseURL: 'http://192.168.88.183:8181',
+})
 
-const fetchURL = 'http://localhost:8908'
+// custom truyen token
 
 export default AxiosInstance;
