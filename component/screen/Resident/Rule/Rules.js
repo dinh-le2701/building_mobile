@@ -1,13 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { styles } from '@component/styles/rulesStyles';
 
 const Rules = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Pressable onPress={() => navigation.navigate('Home')}>
+        <Pressable onPress={() => navigation.goBack()}>
           <AntDesign name="arrowleft" size={24} color="white" style={styles.arrowLeft} />
         </Pressable>
         <Text style={styles.headerText}>Chi Tiết Nội Quy</Text>
@@ -51,49 +52,5 @@ const Rules = ({ navigation }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  header: {
-    padding: 20,
-    alignItems: 'center',
-    backgroundColor: '#a1d2f5',
-    width: '100%',
-    height: 80,
-    flexDirection: 'row',
-  },
-  headerText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'black',
-    marginLeft: 10,
-  },
-  arrowLeft: {
-    color: 'black',    
-    marginTop: 5,  
-  },
-  contentRule: {
-    padding: 20,
-    backgroundColor: 'white',
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-  sectionTitle: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginTop: 15,
-  },
-  detail: {
-    marginBottom: 5,
-    lineHeight: 20,
-  },
-});
 
 export default Rules;

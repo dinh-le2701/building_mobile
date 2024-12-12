@@ -1,12 +1,12 @@
+import { styles } from '@component/styles/salaryStyles';
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Pressable} from 'react-native';
-
 
 const SalaryStaff = ({ navigation }) => {
   return (
     <View style={styles.container}>
         <Text>Hello</Text>
-        <Pressable onPress={()=>navigation.navigate('HomeStaff')}>
+        <Pressable onPress={()=>navigation.goBack()}>
           <Text style={styles.textButton}>Quay về</Text>
         </Pressable>
     </View>
@@ -15,10 +15,3 @@ const SalaryStaff = ({ navigation }) => {
 
 export default SalaryStaff;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
- 
-});

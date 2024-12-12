@@ -67,6 +67,19 @@ export const calculateTotalAmount = (usages) => {
 };
 
 // Hàm tính hóa đơn tháng
+// export const calculateBillingMonth = (createDate) => {
+//   const datePart = createDate.split(' ')[0];
+//   const [day, month, year] = datePart.split('-');
+//   const formattedDate = new Date(year, month - 1, day); 
+  
+//   if (isNaN(formattedDate)) {
+//     console.error("Không thể tạo đối tượng Date từ ngày tháng:", createDate);
+//     return null;
+//   }
+//   formattedDate.setMonth(formattedDate.getMonth() - 1);
+//   return formattedDate.getMonth() + 1;
+// };
+
 export const calculateBillingMonth = (createDate) => {
   const datePart = createDate.split(' ')[0];
   const [day, month, year] = datePart.split('-');
@@ -76,8 +89,42 @@ export const calculateBillingMonth = (createDate) => {
     console.error("Không thể tạo đối tượng Date từ ngày tháng:", createDate);
     return null;
   }
+
+  // Trừ đi 1 tháng
   formattedDate.setMonth(formattedDate.getMonth() - 1);
-  return formattedDate.getMonth() + 1;
+
+  // Lấy tháng và năm
+  const billingMonth = formattedDate.getMonth() + 1;
+  const billingYear = formattedDate.getFullYear();
+
+  // Trả về định dạng "MM/YYYY"
+  return `${billingMonth < 10 ? '0' + billingMonth : billingMonth}/${billingYear}`;
+};
+
+
+// -----------------------tinh tháng mới nhất-----------
+import moment from 'moment'; // Cần cài đặt thư viện moment.js
+
+export const getLatestMonthUsages = (utilityUsages) => {
+  if (!utilityUsages || utilityUsages.length === 0) {
+    return [];
+  }
+
+  // Tìm tháng mới nhất
+  const latestMonth = utilityUsages.reduce((latest, item) => {
+    const currentDate = moment(item.create_date, 'DD-MM-YYYY HH:mm:ss'); // Parse ngày
+    return currentDate.isAfter(latest) ? currentDate : latest;
+  }, moment(utilityUsages[0].create_date, 'DD-MM-YYYY HH:mm:ss'));
+
+  // Lọc các mục thuộc tháng mới nhất
+  const filteredUsages = utilityUsages.filter((item) => {
+    const currentDate = moment(item.create_date, 'DD-MM-YYYY HH:mm:ss');
+    return (
+      currentDate.isSame(latestMonth, 'month') && currentDate.isSame(latestMonth, 'year')
+    );
+  });
+
+  return filteredUsages;
 };
 
 

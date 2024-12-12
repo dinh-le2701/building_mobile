@@ -5,6 +5,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import backgroundImg from "@img/toanha.jpg";
+import { styles } from '@component/styles/notificationStyles';
 
 const NotificationStaff= ({ navigation,route }) => {
   const notifications = [
@@ -81,7 +82,7 @@ const NotificationStaff= ({ navigation,route }) => {
         <Text style={styles.text_header}>Thông báo</Text>
       </View>
       <View style={styles.content} >
-        <Pressable onPress={()=>navigation.navigate('Invoice')}>
+        <Pressable>
           <FlatList
           data={notifications}
           keyExtractor={(item) => item.id.toString()}
@@ -97,10 +98,6 @@ const NotificationStaff= ({ navigation,route }) => {
           <Entypo name="home" size={24} color="black" />
           <Text style={styles.footerText}>Trang chủ</Text>
         </Pressable>
-        <Pressable style={styles.footerItem} onPress={() => navigation.navigate('WorkSchedule')}>
-          <MaterialCommunityIcons name="calendar-edit" size={24} color="black" />
-          <Text style={styles.footerText}>Lịch làm việc</Text>
-        </Pressable>
         <Pressable style={styles.footerItem} onPress={() => navigation.navigate('NotificationStaff')}>
           <Ionicons name="notifications" size={24} color="#004d8d" />
           <Text style={styles.footerText1}>Thông báo</Text>
@@ -115,122 +112,4 @@ const NotificationStaff= ({ navigation,route }) => {
 }
 export default NotificationStaff;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  header: {
-    backgroundColor: '#a1d2f5',
-    width: '100%',
-    height: 80,
-    top: 0,
-    position: 'absolute',
-  },
-  text_header: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'black',
-    marginTop: 30,
-    marginLeft: 30,
-    
-  },
-  content:{
-    marginTop: 100, 
-    paddingHorizontal: 10,
-    width: '100%',
-    flex:1,
-  },
-  borderwidth:{
-    width: '100%',
-    height: 1,
-    backgroundColor: 'black',
-  },
 
-  notificationContainer: {
-    flexDirection: 'row',
-    padding: 10,
-    backgroundColor: '#f0f0f0',
-    marginBottom: 10,
-  },
-  listContainer:{
-    
-  },
-  icon: {
-    width: 50,
-    height: 50,
-    marginRight: 15,
-    borderRadius: 25,
-    marginTop: 10,
-  },
-  textContainer: {
-    flex: 1,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  description: {
-    fontSize: 14,
-    color: '#888',
-  },
-  price: {
-    fontSize: 14,
-    color: '#888',
-    fontStyle: 'italic',
-  },
-
-  status:{
-    fontSize: 14,
-    fontWeight: '400',
-    color: 'green',
-    fontStyle: 'italic',
-    marginTop: 5
-  },
-
-  payment:{
-    width: 90,
-    height: 30,
-    backgroundColor: 'blue',
-    borderRadius: 5,
-    shadowRadius:2,
-    shadowColor: 'grey',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 150,
-    marginTop: -30,
-  },
-
-  payment_text:{
-    color: 'white',
-    fontWeight: '500'
-  },
-  footer: {
-    flexDirection: 'row',
-    backgroundColor: '#f8f8f8',
-    height: 60,
-    width: '100%', 
-    position: 'absolute',
-    bottom: 0, 
-    justifyContent: 'space-around', 
-    alignItems: 'center',
-  },
-  footerItem: {
-    alignItems: 'center',
-  },
-  footerText: {
-    fontSize: 12,
-    fontWeight: '700',
-    marginTop: 2,
-  },
-  footerText1: {
-    fontSize: 12,
-    fontWeight: '700',
-    marginTop: 2,
-    color: '#004d8d'
-  },
-
-});

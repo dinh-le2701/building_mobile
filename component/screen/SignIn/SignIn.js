@@ -1,6 +1,10 @@
-import backgroundImg from "@img/toanha.jpg";
-import { StyleSheet, Text, View, Image, Pressable, TextInput, AsyncStorage } from 'react-native';
 import React, { useState } from 'react';
+import { StyleSheet, Text, View, Image, Pressable, TextInput, Alert } from 'react-native';
+import AxiosInstance from '@api/api.js'; // Import instance Axios
+import backgroundImg from "@img/toanha.jpg";
+import { styles } from "@component/styles/signInStyles";
+import { getUser, getUser2 } from '@component/api/user';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SignIn = ({ navigation }) => {
   const [formData, setFormData] = useState({
@@ -8,6 +12,7 @@ const SignIn = ({ navigation }) => {
     password: ""
   });
 
+  // Hàm xử lý thay đổi dữ liệu đầu vào
   const handleChange = (name, value) => {
     setFormData({
       ...formData,
@@ -15,32 +20,47 @@ const SignIn = ({ navigation }) => {
     });
   };
 
+  // Hàm xử lý đăng nhập
   const handleSignIn = async () => {
     if (!formData.email || !formData.password) {
-      console.log('Email và mật khẩu không được để trống');
+      Alert.alert('Thông báo', 'Email và mật khẩu không được để trống');
       return;
     }
+
     try {
-      const response = await fetch('http://192.168.1.93:8901/auth/signin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password 
-        })
+      const response = await AxiosInstance.post('/api/account/login', {
+        email: formData.email,
+        password: formData.password,
       });
-      console.log(response);
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Login Successfully:', data.message);
-        navigation.navigate("Home");
+
+      if (response?.data) {
+        const { role, token, account_id } = response.data;
+
+        console.log('Đăng nhập thành công:', response.data.message);
+        console.log('Dữ liệu nhận được:', response.data);
+
+        await AsyncStorage.clear();
+
+        const resUser = await getUser(account_id.toString());
+        await AsyncStorage.setItem("user", JSON.stringify(resUser));
+
+        if (role) {
+          if (role === "USER") {
+            navigation.navigate("HomeResident", { token, account_id });
+          } else if (role === "STAFF") {
+            navigation.navigate("HomeStaff", { token, account_id });
+          } else {
+            Alert.alert("Thông báo", "Bạn không có quyền truy cập vào chức năng này.");
+          }
+        } else {
+          Alert.alert("Lỗi", "Vai trò không được xác định. Vui lòng liên hệ quản trị viên.");
+        }
       } else {
-        console.log('HTTP error:', response.status);
+        Alert.alert("Lỗi", "Không nhận được dữ liệu từ server.");
       }
     } catch (error) {
-      console.error('Error during sign-in:', error);
+      console.error('Lỗi khi đăng nhập:', error);
+      Alert.alert("Lỗi", "Có lỗi xảy ra khi đăng nhập. Vui lòng thử lại.");
     }
   };
 
@@ -53,7 +73,6 @@ const SignIn = ({ navigation }) => {
           <TextInput
             style={styles.textiput}
             placeholder='Enter your email'
-            secureTextEntry={false}
             value={formData.email}
             onChangeText={(text) => handleChange('email', text)}
           />
@@ -64,12 +83,12 @@ const SignIn = ({ navigation }) => {
           <TextInput
             style={styles.textiput}
             placeholder='Enter password'
-            secureTextEntry={true}
+            secureTextEntry
             value={formData.password}
             onChangeText={(text) => handleChange('password', text)}
           />
         </View>
-        
+
         <Pressable style={styles.btn_signin} onPress={handleSignIn}>
           <Text style={styles.text_btn_signin}>Sign In</Text>
         </Pressable>
@@ -79,56 +98,3 @@ const SignIn = ({ navigation }) => {
 };
 
 export default SignIn;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  img_background: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-    marginTop: -146.5
-  },
-  content_signin: {
-    width: '80%',
-    padding: 20,
-    backgroundColor: '#EEF4F5',
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    marginTop: -480,
-  },
-  user: {
-    marginBottom: 10
-  },
-  text: {
-    fontSize: 16,
-    fontWeight: 'bold'
-  },
-  textiput: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    paddingHorizontal: 10,
-    marginTop: 10,
-    marginBottom: 10,
-    borderRadius: 5,
-    height: 40
-  },
-  btn_signin: {
-    width: 270,
-    backgroundColor: '#a1d2f5',
-    padding: 15,
-    borderRadius: 5,
-    marginTop: 20,
-  },
-  text_btn_signin: {
-    color: '#fff',
-    fontWeight: 'bold',
-    textAlign: 'center'
-  },
-});
