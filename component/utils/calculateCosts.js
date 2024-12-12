@@ -66,20 +66,6 @@ export const calculateTotalAmount = (usages) => {
   return totalElectricity + totalWater + managementFee;
 };
 
-// Hàm tính hóa đơn tháng
-// export const calculateBillingMonth = (createDate) => {
-//   const datePart = createDate.split(' ')[0];
-//   const [day, month, year] = datePart.split('-');
-//   const formattedDate = new Date(year, month - 1, day); 
-  
-//   if (isNaN(formattedDate)) {
-//     console.error("Không thể tạo đối tượng Date từ ngày tháng:", createDate);
-//     return null;
-//   }
-//   formattedDate.setMonth(formattedDate.getMonth() - 1);
-//   return formattedDate.getMonth() + 1;
-// };
-
 export const calculateBillingMonth = (createDate) => {
   const datePart = createDate.split(' ')[0];
   const [day, month, year] = datePart.split('-');
